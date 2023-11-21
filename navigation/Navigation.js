@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomepageContainer from "../screens/HomepageContainer";
@@ -7,6 +8,8 @@ const homeName = "Tasks"
 
 
 const Navigation = () =>{
+
+    const {addTaskModalOpen, setAddTaskModalOpen} = useState(false)
 
     return(
         <NavigationContainer>

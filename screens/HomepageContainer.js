@@ -2,6 +2,7 @@ import { View, Text, FlatList, Button } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { v4 as uuidv4 } from "uuid"
 import { useEffect, useState } from "react"
+import Item from "../components/Item"
 
 const HomepageContainer = () => {
 
@@ -77,8 +78,14 @@ const HomepageContainer = () => {
                 data={Object.values(todos)}
                 renderItem={(row) => {
                     return (
-                        <View>
-                        </View>
+                        <Item
+                            isCompleted={row.item.isCompleted}
+                            textValue={row.item.task}
+                            id={row.item.id}
+                            deleteTodo={deleteTodo}
+                            completeTodo={completeTodo}
+                            incomepleteTodo={incompleteTodo}
+                        />
                     )
                 }}
                 keyExtractor={(item) => item.id}
