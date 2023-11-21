@@ -1,12 +1,20 @@
-import { View, Text, FlatList, Button } from "react-native"
+import { View, Text, FlatList, Button, Modal, StyleSheet } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import "react-native-get-random-values"
 import { v4 as uuidv4 } from "uuid"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Item from "../components/Item"
+import { TaskModalContext } from "../contexts/TaskModalContext"
+import AddTask from "../modals/AddTask"
 
 const HomepageContainer = () => {
 
     const [todos, setTodos] = useState([])
+    const {addTaskModalOpen, setAddTaskModalOpen} = useContext(TaskModalContext)
+
+    componentDidMount = () => {
+        loadTodos();
+    };
 
     useEffect(() => {
         loadTodos()
@@ -65,7 +73,7 @@ const HomepageContainer = () => {
         try{
             await AsyncStorage.clear();
             setTodos([])
-            alert("Storage cleared")
+            alert("Tasks cleared")
         } catch (e) {
             alert("Unable to clear storage", e)
         }
@@ -73,14 +81,14 @@ const HomepageContainer = () => {
 
 
     return(
-        <View>
+        <View style={styles.container}>
             <FlatList
                 data={Object.values(todos)}
                 renderItem={(row) => {
                     return (
                         <Item
                             isCompleted={row.item.isCompleted}
-                            textValue={row.item.task}
+                            textValue={row.item.title}
                             id={row.item.id}
                             deleteTodo={deleteTodo}
                             completeTodo={completeTodo}
@@ -90,12 +98,47 @@ const HomepageContainer = () => {
                 }}
                 keyExtractor={(item) => item.id}
             />
+
+            <Modal visible={addTaskModalOpen} animationType="slide" transparent={true}>
+                <View style={styles.modal}>
+                    <AddTask addTodo={addTodo}/>
+                    <View style={styles.button}>
+                        <Button
+                            title="close"
+                            onPress={() => setAddTaskModalOpen(false)}
+                        />
+                    </View>
+                </View>
+            </Modal>
+  
             <Button
                 onPress={clearAsyncStorage}
                 title="Clear all"
+                color={"#7C90A0"}
             />
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    modal:{
+        height: "40%",
+        marginTop: "auto",
+        overflow: "hidden",
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        backgroundColor: "#FFE3DC",
+        justifyContent: "center",
+        alignItems: "center",
+        // flex: 1
+    },
+    container:{
+        flex: 1,
+        backgroundColor: "#DBB4AD"
+    },
+    button:{
+        margin: 20
+    }
+})
 
 export default HomepageContainer
