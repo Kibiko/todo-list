@@ -15,16 +15,16 @@ const Item = ({isCompleted, textValue, id, deleteTodo, incomepleteTodo, complete
 
     return(
         <View style={styles.container}>
-            <View style={styles.rowContainer}>
+            <View style={styles.rowContainer(textValue)}>
                 <Text style={styles.text(isCompleted)}>{textValue}</Text>
-                <TouchableOpacity onPressOut={() => deleteTodo(id)}>
+                <TouchableOpacity onPress={() => deleteTodo(id)}>
                     <FontAwesome
                         name={"trash-o"}
                         size={30}
-                        style={{color: "black", marginHorizontal: 30}}
+                        style={{color: "black", marginRight: 50, marginLeft: 20}}
                         ></FontAwesome>
                 </TouchableOpacity>
-                <TouchableOpacity onPressOut={toggleItem}>
+                <TouchableOpacity onPress={toggleItem}>
                     <FontAwesome
                         name={isCompleted ? "check-circle-o" : "circle-o"}
                         size={30}
@@ -44,13 +44,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
     },
-    rowContainer: {
+    rowContainer:(textValue) => ({
         flexDirection: "row",
         width: width,
-        height: height/12,
+        height: textValue.length > 19? Math.ceil(height*textValue.length/30)/12 : height/12,
         alignItems: "center",
         justifyContent: "space-between"
-    },
+    }),
     text:(isCompleted) => ({
         color: isCompleted? "green" :"black",
         fontStyle: isCompleted ? "italic" : "normal",
