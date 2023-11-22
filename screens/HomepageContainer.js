@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button, Modal, StyleSheet } from "react-native"
+import { View, Text, FlatList, Button, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import "react-native-get-random-values"
 import { v4 as uuidv4 } from "uuid"
@@ -11,6 +11,7 @@ const HomepageContainer = () => {
 
     const [todos, setTodos] = useState([])
     const {addTaskModalOpen, setAddTaskModalOpen} = useContext(TaskModalContext)
+    const [clearAllModal, setClearAllModal] = useState(false)
 
     componentDidMount = () => {
         loadTodos();
@@ -54,19 +55,27 @@ const HomepageContainer = () => {
     }
 
     const incompleteTodo = (id) => {
-        setTodos((prevState) =>{
-            const newState = {...prevState, [id]: {...prevState[id], isCompleted: false},}
-            saveTodos(newState)
-            return { ...newState }
-        })
+        const inComplete = { isCompleted: false }
+        const updatedTodos = todos.map(todo =>{
+            if(todo.id === id){
+                return { ...todo, ...inComplete}
+            }
+            return todo;
+            })
+        saveTodos(updatedTodos) //save to AsyncStorage
+        setTodos(updatedTodos) //save to viewing storage
     }
 
     const completeTodo = (id) => {
-        setTodos((prevState) =>{
-            const newState = {...prevState, [id]: {...prevState[id], isCompleted: true},}
-            saveTodos(newState)
-            return { ...newState }
-        })
+        const inComplete = { isCompleted: true }
+        const updatedTodos = todos.map(todo =>{
+            if(todo.id === id){
+                return { ...todo, ...inComplete}
+            }
+            return todo;
+            })
+        saveTodos(updatedTodos)
+        setTodos(updatedTodos) 
     }
 
     const clearAsyncStorage = async () => {
@@ -99,20 +108,51 @@ const HomepageContainer = () => {
                 keyExtractor={(item) => item.id}
             />
 
-            <Modal visible={addTaskModalOpen} animationType="slide" transparent={true}>
-                <View style={styles.modal}>
-                    <AddTask addTodo={addTodo}/>
-                    <View style={styles.button}>
-                        <Button
-                            title="close"
-                            onPress={() => setAddTaskModalOpen(false)}
-                        />
+            <Modal visible={addTaskModalOpen} animationType="slide" transparent={true} onRequestClose={() => setAddTaskModalOpen(false)}>
+                <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPress={() => setAddTaskModalOpen(false)} >
+                    <TouchableWithoutFeedback>
+                        <View style={styles.modal}>
+                            <AddTask addTodo={addTodo}/>
+                            <View style={styles.button}>
+                                <Button
+                                    title="close"
+                                    onPress={() => setAddTaskModalOpen(false)}
+                                    color={"#7C90A0"} 
+                                />
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </TouchableOpacity>
+            </Modal>
+
+            <Modal visible={clearAllModal} animationType="slide" transparent={true}>
+                <View style={styles.clearAllModal}>
+                    <View style={styles.clearText}>
+                        <Text>Are you sure you want to clear all?</Text>
+                    </View>
+                    <View style={styles.clearButtons}>
+                        <View style={styles.eachClearButton}>
+                            <Button
+                                onPress={() =>  {
+                                    clearAsyncStorage()
+                                    setClearAllModal(false)}}
+                                title="Yes"
+                                color={"#7C90A0"}
+                            />
+                        </View>
+                        <View style={styles.eachClearButton}>
+                            <Button
+                                onPress={()=>setClearAllModal(false)}
+                                title="No"
+                                color={"#7C90A0"} 
+                            />
+                        </View>
                     </View>
                 </View>
             </Modal>
-  
+
             <Button
-                onPress={clearAsyncStorage}
+                onPress={()=>setClearAllModal(true)}
                 title="Clear all"
                 color={"#7C90A0"}
             />
@@ -132,9 +172,32 @@ const styles = StyleSheet.create({
         alignItems: "center",
         // flex: 1
     },
+    clearAllModal:{
+        height: "20%",
+        marginTop: "auto",
+        overflow: "hidden",
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        backgroundColor: "#FFE3DC",
+        justifyContent: "center",
+        alignItems: "center",
+        // flex: 1
+    },
+    clearText:{
+        margin: 20
+    },
+    clearButtons:{
+        flexDirection: "row",
+    },
+    eachClearButton:{
+        marginHorizontal: 20
+    },
     container:{
         flex: 1,
         backgroundColor: "#DBB4AD"
+    },
+    modalContainer:{
+        flex: 1,
     },
     button:{
         margin: 20

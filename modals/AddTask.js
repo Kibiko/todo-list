@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, View, TextInput } from "react-native"
+import { Button, View, TextInput, StyleSheet } from "react-native"
 
 
 const AddTask = ({addTodo}) => {
@@ -18,17 +18,34 @@ const AddTask = ({addTodo}) => {
         <View>
             <TextInput 
                 value={text}
-                placeholder="Enter new task"
+                placeholder="Enter new item"
                 onChangeText={setText}
+                selectionColor={"black"}
+                underlineColorAndroid={"white"}
+                style={styles.text}
             />
-            <Button 
-                title="Add"
-                onPress={() => handleAddTask(text)}
-                onSub
-            />
+            <View style={styles.button}>
+                <Button 
+                    title="Add"
+                    onPress={() => handleAddTask(text)}
+                    color={"#7C90A0"} 
+                />
+            </View>
 
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    text:{
+        margin: 30,
+        padding: 10,
+        fontSize: 20
+    },
+    button:{
+        justifyContent: "center",
+        alignItems: "center"
+    }
+})
 
 export default AddTask

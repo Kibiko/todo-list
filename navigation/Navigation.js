@@ -7,7 +7,7 @@ import { TaskModalContext } from "../contexts/TaskModalContext";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
 
 const Tab = createBottomTabNavigator()
-const homeName = "Tasks"
+const homeName = "List"
 
 
 const Navigation = () =>{
@@ -42,7 +42,7 @@ const Navigation = () =>{
                             <Button 
                                 color={"#7C90A0"} 
                                 onPress={() => setAddTaskModalOpen(true)} 
-                                title="add task"
+                                title="add item"
                             />
                         ),
                         headerStyle:{
