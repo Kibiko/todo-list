@@ -82,7 +82,7 @@ const HomepageContainer = () => {
         try{
             await AsyncStorage.clear();
             setTodos([])
-            alert("Tasks cleared")
+            // alert("All cleared")
         } catch (e) {
             alert("Unable to clear storage", e)
         }
@@ -128,7 +128,7 @@ const HomepageContainer = () => {
             <Modal visible={clearAllModal} animationType="slide" transparent={true}>
                 <View style={styles.clearAllModal}>
                     <View style={styles.clearText}>
-                        <Text>Are you sure you want to clear all?</Text>
+                        <Text style={styles.clearTextSize}>Are you sure you want to clear all?</Text>
                     </View>
                     <View style={styles.clearButtons}>
                         <View style={styles.eachClearButton}>
@@ -185,6 +185,9 @@ const styles = StyleSheet.create({
     },
     clearText:{
         margin: 20
+    },
+    clearTextSize:{
+        fontSize: 18
     },
     clearButtons:{
         flexDirection: "row",
